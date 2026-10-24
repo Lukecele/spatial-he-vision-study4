@@ -256,3 +256,5 @@ if len(coords) > 0 and coords.ndim == 2 and coords.shape[1] >= 2:
 print(f"\n🎉 PERFETTO! Tutti i risultati e i grafici sono stati generati e salvati sul tuo Google Drive:")
 print(f"   📁 {DRIVE_DIR}/results/kaplan_meier_survival.png")
 print(f"   📁 {DRIVE_DIR}/results/attention_heatmap_{sample_pid}.png")
+print(f"\n⭐ Ti è piaciuto il lavoro? Supporta la ricerca aperta lasciando una STELLA ⭐ su GitHub:")
+print(f"   👉 https://github.com/Lukecele/spatial-he-vision-study4")

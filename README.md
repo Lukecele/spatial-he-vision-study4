@@ -13,6 +13,10 @@
 **Classification:** Independent Scientific Research • Computational Pathology, Artificial Intelligence & Translational Oncology  
 **Manuscript PDF:** [MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)
 
+> [!TIP]
+> **Support Open-Source Computational Pathology:**  
+> If you find InSituVision-AI, our zero-disk streaming architecture, or this dataset helpful in your research or clinical studies, please consider giving this repository a ⭐ **Star** on GitHub!
+
 ---
 
 ## 🔬 Clinical Motivation: From 5,000 € to < 5 €

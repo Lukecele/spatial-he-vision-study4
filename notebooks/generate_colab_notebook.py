@@ -92,6 +92,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "Nessuna GPU (CPU)"
 print(f"✓ Dispositivo attivo di calcolo: {device} ({gpu_name})")
 !nvidia-smi || echo "Avviso: GPU non rilevata."
+print("⭐ TIP: Se trovi utile InSituVision per la tua ricerca, supporta il progetto lasciando una stella su GitHub:")
+print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
 """))
 
     # --------------------------------------------------------------------------
@@ -508,6 +510,8 @@ if len(coords) > 0 and coords.ndim == 2 and coords.shape[1] >= 2:
 print("\\n🎉 PIPELINE COMPLETATA CON SUCCESSO!")
 print(f"Tutti i file e grafici sono al sicuro nel tuo Google Drive:")
 print(f"📁 {DRIVE_DIR}/results/")
+print("\\n⭐ Ti è piaciuto il lavoro? Supporta la ricerca aperta lasciando una STELLA ⭐ su GitHub:")
+print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
 """))
 
     # Construct Jupyter notebook dictionary
