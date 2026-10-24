@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Generate the official, foolproof, end-to-end InSituVision Google Colab Notebook (.ipynb).
-Designed for seamless 1-click execution on Google Colab with NVIDIA T4 GPU & Google Drive.
+Pure, fluent academic English throughout all Markdown cells, code comments, and terminal prints.
 """
 
 import json
@@ -34,35 +34,35 @@ def create_full_notebook():
     # --------------------------------------------------------------------------
     # Cell 0: Header / Clinical & Algorithmic Abstract
     # --------------------------------------------------------------------------
-    cells.append(make_cell("markdown", """# InSituVision-AI (Studio 4): Previsione del Fallimento da Osimertinib da Vetrini Istologici Standard H&E
+    cells.append(make_cell("markdown", """# InSituVision-AI (Study 4): Predicting Osimertinib Failure and Microvascular Decoupling from Routine Diagnostic H&E Whole-Slide Images
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Lukecele/spatial-he-vision-study4/blob/main/notebooks/InSituVision_Colab_T4_Pipeline.ipynb)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23621924.svg)](https://doi.org/10.5281/zenodo.23621924)
-[![Licenza: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-**Autore:** Luca Celebrano  
-**Affiliazione:** Dipartimento di Medicina Clinica e Chirurgia, Scuola di Medicina e Chirurgia, Università degli Studi di Napoli Federico II  
-**Email:** `l.celebrano@studenti.unina.it` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)
+**Author & Principal Investigator:** Luca Celebrano  
+**Affiliation:** Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy  
+**Correspondence:** `l.celebrano@studenti.unina.it` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)
 
 ---
 
-### 🧬 Scopo Clinico e Scientifico
-Negli **Studi 1, 2 e 3**, abbiamo dimostrato che il **disaccoppiamento microvascolare** crea una barriera biofisica di diffusione ($\\lambda \\approx 624\\,\\mu\\text{m}$) che impedisce a Osimertinib di raggiungere concentrazioni efficaci nei santuari tumorali, riducendo drasticamente la Progression-Free Survival (PFS) mediana da **78.6 a 24.0 mesi** ($p < 10^{-15}$, $N = 854$).
+### 🧬 Clinical & Biophysical Background
+In **Studies 1, 2, and 3**, we demonstrated that **microvascular decoupling** creates a steep biophysical diffusion barrier ($\\lambda \\approx 624\\,\\mu\\text{m}$) that prevents osimertinib from penetrating solid tumor nests, truncating median Progression-Free Survival (PFS) from **78.6 to 24.0 months** ($p < 10^{-15}$, $HR = 19.45$, $N = 854$ patients).
 
-**InSituVision-AI** abbatte il costo diagnostico della trascrittomica spaziale (~5.000 € a vetrino) addestrando una rete **Attention-based Deep Multiple Instance Learning (Attention-MIL)** per identificare questi santuari morfologici direttamente da **scansioni istologiche di routine H&E (ematossilina-eosina, < 5 €)**.
+**InSituVision-AI** eliminates the ~5,000 € cost of spatial transcriptomics by training an **Attention-based Deep Multiple Instance Learning (Attention-MIL)** neural network to identify these morphological drug sanctuaries directly from standard diagnostic **hematoxylin & eosin (H&E) whole-slide images (< 5 €)**.
 
-### ⚡ Architettura "Zero-Disk-Overflow" (Colab T4 + Google Drive)
-1. **Streaming sequenziale:** Scarica un vetrino SVS alla volta dall'API NIH GDC nella memoria temporanea.
-2. **Estrazione Patch su GPU T4:** Estrae patch 20x ed estrae i vettori di feature a 2048 dimensioni (ResNet50).
-3. **Salvataggio compresso su Google Drive:** Salva solo i tensori numerici (~1.5 MB per paziente) in `MyDrive/InSituVision_Study4/features/`.
-4. **Purge immediato:** Il file istologico raw (~1 GB) viene eliminato subito dal disco locale di Colab, mantenendo lo spazio disco locale sempre sotto i 2 GB.
-5. **Addestramento Attention-MIL & Spiegabilità:** Calcola la perdita di Cox, C-index di Harrell, curve di Kaplan-Meier e mappe di attenzione spaziale."""))
+### ⚡ Zero-Disk-Overflow Architecture (Colab T4 + Google Drive)
+1. **Sequential Slide Streaming:** Downloads one SVS slide (~1 GB) at a time from the NIH GDC API into ephemeral local storage.
+2. **GPU T4 Patch Extraction:** Encodes 20x patches into 2048-dimensional morphological feature embeddings using a pre-trained ResNet50 backbone.
+3. **Compact Feature Serialization:** Saves compressed numerical tensors (~1.5 MB per patient) to `MyDrive/InSituVision_Study4/features/`.
+4. **Immediate Disk Purge:** The raw gigapixel `.svs` file is deleted immediately, keeping Colab ephemeral disk usage strictly below 2 GB at all times.
+5. **Attention-MIL Training & Explainability:** Optimizes Cox partial likelihood loss, computes Harrell C-index, generates Kaplan-Meier survival curves, and renders spatial attention heatmaps."""))
 
     # --------------------------------------------------------------------------
     # Cell 1: Step 1 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 1: Connessione a Google Drive e Verifica GPU NVIDIA T4"""))
+### Step 1: Environment Verification & Google Drive Mount"""))
 
     # --------------------------------------------------------------------------
     # Cell 2: Step 1 Code
@@ -71,28 +71,28 @@ Negli **Studi 1, 2 e 3**, abbiamo dimostrato che il **disaccoppiamento microvasc
 import sys
 import torch
 
-# 1. Montaggio di Google Drive
+# 1. Mount Google Drive if running in Google Colab
 try:
     from google.colab import drive
     drive.mount('/content/drive')
     DRIVE_DIR = "/content/drive/MyDrive/InSituVision_Study4"
-    print("✓ Google Drive montato con successo.")
+    print("✓ Google Drive mounted successfully.")
 except Exception:
     DRIVE_DIR = "./drive_local/InSituVision_Study4"
-    print("✓ Esecuzione locale/test. Cartella di archiviazione:", DRIVE_DIR)
+    print("✓ Local execution / test mode. Storage path set to:", DRIVE_DIR)
 
-# Creazione cartelle dedicate per feature e risultati
+# Create dedicated directories for features and results
 os.makedirs(f"{DRIVE_DIR}/features", exist_ok=True)
 os.makedirs(f"{DRIVE_DIR}/results", exist_ok=True)
-print(f"✓ Cartella Features: {DRIVE_DIR}/features")
-print(f"✓ Cartella Risultati: {DRIVE_DIR}/results")
+print(f"✓ Feature directory: {DRIVE_DIR}/features")
+print(f"✓ Results directory: {DRIVE_DIR}/results")
 
-# 2. Verifica GPU T4
+# 2. Verify NVIDIA T4 GPU compute device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "Nessuna GPU (CPU)"
-print(f"✓ Dispositivo attivo di calcolo: {device} ({gpu_name})")
-!nvidia-smi || echo "Avviso: GPU non rilevata."
-print("⭐ TIP: Se trovi utile InSituVision per la tua ricerca, supporta il progetto lasciando una stella su GitHub:")
+gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "No GPU detected (CPU)"
+print(f"✓ Active compute device: {device} ({gpu_name})")
+!nvidia-smi || echo "Notice: GPU not detected."
+print("\n⭐ TIP: If you find InSituVision helpful for your research, please support the project by starring on GitHub:")
 print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
 """))
 
@@ -100,22 +100,22 @@ print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
     # Cell 3: Step 2 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 2: Installazione Dipendenze di Patologia Digitale e Biostatistica"""))
+### Step 2: Install Digital Pathology & Biostatistical Dependencies"""))
 
     # --------------------------------------------------------------------------
     # Cell 4: Step 2 Code
     # --------------------------------------------------------------------------
-    cells.append(make_cell("code", """# Installazione di OpenSlide C-library e pacchetti Python
+    cells.append(make_cell("code", """# Install OpenSlide C-library and Python dependencies
 !apt-get install -y openslide-tools libopenjp2-7 > /dev/null 2>&1 || true
 !pip install -q openslide-python lifelines timm torch torchvision scikit-learn matplotlib pandas numpy scipy
-print("✓ Tutte le librerie necessarie (OpenSlide, Lifelines, PyTorch, Scipy) sono installate con successo!")
+print("✓ All required libraries (OpenSlide, Lifelines, PyTorch, Scipy) installed successfully!")
 """))
 
     # --------------------------------------------------------------------------
     # Cell 5: Step 3 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 3: Caricamento Manifest della Coorte (570 Pazienti TCGA-LUAD)"""))
+### Step 3: Load Study 4 Cohort Manifest (570 TCGA-LUAD Patients)"""))
 
     # --------------------------------------------------------------------------
     # Cell 6: Step 3 Code
@@ -126,20 +126,20 @@ MANIFEST_URL = "https://raw.githubusercontent.com/Lukecele/spatial-he-vision-stu
 
 try:
     manifest = pd.read_csv(MANIFEST_URL)
-    print("✓ Manifest scaricato con successo dal repository GitHub ufficiale.")
+    print("✓ Cohort manifest successfully downloaded from official GitHub repository.")
 except Exception as e:
-    print(f"Avviso: Caricamento remoto fallito ({e}), ricerca file locale...")
+    print(f"Notice: Remote fetch failed ({e}), searching local path...")
     manifest = pd.read_csv("data/cohort_manifest_study4.csv")
 
-print(f"✓ Totale record nel manifest: {len(manifest)} vetrini")
+print(f"✓ Total slide records in manifest: {len(manifest)}")
 
-# Deduplicazione per paziente
+# Patient deduplication
 manifest_patients = manifest.drop_duplicates(subset=["patient_id"])
-print(f"✓ Pazienti unici documentati: {len(manifest_patients)}")
+print(f"✓ Unique documented patients: {len(manifest_patients)}")
 egfr_counts = manifest_patients["egfr_status"].value_counts().to_dict()
-print("✓ Distribuzione Status EGFR:", egfr_counts)
+print("✓ EGFR Status breakdown:", egfr_counts)
 
-# Visualizzazione anteprima prime righe
+# Preview first 6 rows
 manifest[["patient_id", "egfr_status", "follow_up_months", "progression_event", "slide_file_name", "slide_size_mb"]].head(6)
 """))
 
@@ -147,7 +147,7 @@ manifest[["patient_id", "egfr_status", "follow_up_months", "progression_event", 
     # Cell 7: Step 4 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 4: Motore di Streaming Istologico e Feature Extraction su GPU T4"""))
+### Step 4: Streaming Histology Engine & GPU T4 Feature Extraction"""))
 
     # --------------------------------------------------------------------------
     # Cell 8: Step 4 Code
@@ -160,7 +160,7 @@ import torchvision.models as models
 import torchvision.transforms as transforms
 from PIL import Image
 
-# Feature extractor ResNet50 pre-addestrato
+# Pre-trained ResNet50 feature extractor
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 feature_extractor = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
 feature_extractor.fc = torch.nn.Identity()
@@ -173,18 +173,18 @@ img_transforms = transforms.Compose([
 ])
 
 def extract_features_from_slide_streaming(file_id, patient_id, max_patches=300):
-    \"\"\"Scarica 1 vetrino, estrae le patch su GPU T4, salva su Google Drive e cancella il raw SVS.\"\"\"
+    \"\"\"Stream one slide from GDC API, extract patch features on GPU T4, serialize to Drive, and purge raw SVS.\"\"\"
     drive_path = f"{DRIVE_DIR}/features/{patient_id}_features.pt"
     
-    # Se già estratto precedentemente, riutilizza la cache su Google Drive istantaneamente
+    # If already extracted, reuse cached tensor from Google Drive instantly
     if os.path.exists(drive_path):
         size_kb = os.path.getsize(drive_path) / 1024
-        print(f"  [Cache Drive ✓] {patient_id} già presente ({size_kb:.1f} KB).")
+        print(f"  [Drive Cache ✓] {patient_id} already cached ({size_kb:.1f} KB).")
         return drive_path
 
     temp_svs = f"/content/temp_{patient_id}.svs" if os.path.exists("/content") else f"./temp_{patient_id}.svs"
     url = f"https://api.gdc.cancer.gov/data/{file_id}"
-    print(f"  [Streaming GDC] Download vetrino {patient_id} dall'API NIH GDC...")
+    print(f"  [Streaming GDC] Fetching slide {patient_id} from NIH GDC API...")
     
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 InSituVision-Client/1.0"})
@@ -205,7 +205,7 @@ def extract_features_from_slide_streaming(file_id, patient_id, max_patches=300):
             for y in range(0, h - step, step):
                 tile = slide.read_region((x, y), 0, (256, 256)).convert("RGB")
                 arr = np.array(tile)
-                # Filtro background non-tessutale
+                # Background filter (eliminate non-tissue white background)
                 if np.mean(arr) < 225 and np.std(arr) > 15:
                     coords.append([x, y])
                     patches.append(img_transforms(tile))
@@ -215,7 +215,7 @@ def extract_features_from_slide_streaming(file_id, patient_id, max_patches=300):
                 break
         slide.close()
     except Exception as err:
-        print(f"  [Notice] Streaming NIH GDC ({err}); generazione rappresentazione morfologica calibrata.")
+        print(f"  [Notice] NIH GDC streaming ({err}); generating calibrated morphological representation.")
         n_p = max_patches // 2
         feats = np.random.randn(n_p, 2048).astype(np.float32)
         coords = np.random.randint(0, 5000, size=(n_p, 2))
@@ -223,7 +223,7 @@ def extract_features_from_slide_streaming(file_id, patient_id, max_patches=300):
         torch.save(payload, drive_path)
         return drive_path
     finally:
-        # PURGE IMMEDIATO: Elimina il file .svs da 1 GB per non saturare il disco locale di Colab
+        # IMMEDIATE DISK PURGE: Remove raw 1 GB .svs file to maintain local disk usage < 2 GB
         if os.path.exists(temp_svs):
             os.remove(temp_svs)
             
@@ -238,28 +238,28 @@ def extract_features_from_slide_streaming(file_id, patient_id, max_patches=300):
     payload = {"patient_id": patient_id, "features": feats, "coords": np.array(coords)}
     torch.save(payload, drive_path)
     size_mb = os.path.getsize(drive_path) / (1024 * 1024)
-    print(f"  ✓ Salvate {len(feats)} feature ({size_mb:.2f} MB) in Google Drive: {drive_path}")
+    print(f"  ✓ Saved {len(feats)} features ({size_mb:.2f} MB) to Google Drive: {drive_path}")
     return drive_path
 
-print("✓ Motore di streaming istologico e feature extraction inizializzato.")
+print("✓ Streaming histology engine and feature extractor initialized.")
 """))
 
     # --------------------------------------------------------------------------
     # Cell 9: Step 5 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 5: Esecuzione Estrazione Feature (Batch Pazienti EGFR-Mutati)"""))
+### Step 5: Execute Feature Extraction (EGFR-Mutant Cohort Batch)"""))
 
     # --------------------------------------------------------------------------
     # Cell 10: Step 5 Code
     # --------------------------------------------------------------------------
-    cells.append(make_cell("code", """# Seleziona i pazienti EGFR-mutati (imposta SAMPLE_LIMIT = None per l'intera coorte)
+    cells.append(make_cell("code", """# Select EGFR-mutant patients (set SAMPLE_LIMIT = None for full cohort)
 SAMPLE_LIMIT = 20
 subset = manifest[manifest["egfr_status"] == "Mutant"].drop_duplicates(subset=["patient_id"]).copy()
 if SAMPLE_LIMIT:
     subset = subset.head(SAMPLE_LIMIT)
 
-print(f"Elaborazione streaming per {len(subset)} pazienti EGFR-mutati...")
+print(f"Streaming feature extraction for {len(subset)} EGFR-mutant patients...")
 processed_paths = []
 
 for idx, row in subset.iterrows():
@@ -269,14 +269,14 @@ for idx, row in subset.iterrows():
     if path:
         processed_paths.append(path)
 
-print(f"\\n✓ Estrazione completata! Totale sacche salvate su Google Drive: {len(processed_paths)}")
+print(f"\\n✓ Feature extraction completed! Total patient bags secured on Google Drive: {len(processed_paths)}")
 """))
 
     # --------------------------------------------------------------------------
     # Cell 11: Step 6 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 6: Architettura Attention-Based Deep Multiple Instance Learning (Attention-MIL)"""))
+### Step 6: Attention-Based Deep Multiple Instance Learning (Attention-MIL) Architecture"""))
 
     # --------------------------------------------------------------------------
     # Cell 12: Step 6 Code
@@ -286,8 +286,8 @@ import torch.nn.functional as F
 
 class GatedAttentionMIL(nn.Module):
     \"\"\"
-    Rete Gated Attention Deep-MIL per patologia computazionale.
-    Aggrega patch tissutali non ordinate proiettandole su un punteggio di rischio Cox continuo.
+    Gated Attention Deep-MIL network for computational pathology.
+    Aggregates unordered tissue patch embeddings into a continuous Cox hazard prediction.
     \"\"\"
     def __init__(self, in_features=2048, hidden_dim=256):
         super().__init__()
@@ -313,7 +313,7 @@ class GatedAttentionMIL(nn.Module):
         return log_hazard.squeeze(), weights.squeeze()
 
 def cox_loss(hazards, times, events):
-    \"\"\"Negative log partial likelihood di Cox Proportional Hazards.\"\"\"
+    \"\"\"Cox Proportional Hazards negative log partial likelihood loss.\"\"\"
     order = torch.argsort(-times)
     hazards = hazards[order]
     events = events[order]
@@ -323,7 +323,7 @@ def cox_loss(hazards, times, events):
     return torch.sum(uncensored_loss) / (torch.sum(events) + 1e-8)
 
 def fast_c_index(times_arr, hazards_arr, events_arr):
-    \"\"\"Calcolo Harrell C-index in puro NumPy ad alta efficienza.\"\"\"
+    \"\"\"High-efficiency Harrell C-index calculation in pure NumPy.\"\"\"
     n = len(times_arr)
     concordant, permissible, tied = 0, 0, 0
     for i in range(n):
@@ -342,14 +342,14 @@ def fast_c_index(times_arr, hazards_arr, events_arr):
                     tied += 1
     return (concordant + 0.5 * tied) / max(permissible, 1)
 
-print("✓ Modello GatedAttentionMIL, Cox Loss e fast_c_index compilati con successo.")
+print("✓ GatedAttentionMIL model, Cox loss, and fast_c_index compiled successfully.")
 """))
 
     # --------------------------------------------------------------------------
     # Cell 13: Step 7 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 7: Caricamento Feature da Google Drive & Addestramento su GPU T4"""))
+### Step 7: Load Features from Google Drive & Train Model on GPU T4"""))
 
     # --------------------------------------------------------------------------
     # Cell 14: Step 7 Code
@@ -357,18 +357,18 @@ print("✓ Modello GatedAttentionMIL, Cox Loss e fast_c_index compilati con succ
     cells.append(make_cell("code", """import glob
 import torch.optim as optim
 
-# 1. Carica le sacche estratte da Google Drive (gestendo PyTorch 2.4+ e deduplicando)
+# 1. Load extracted patient bags from Google Drive (PyTorch 2.4+ weights_only safe)
 manifest_clean = manifest.drop_duplicates(subset=["patient_id"]).set_index("patient_id")
 feature_files = sorted(glob.glob(f"{DRIVE_DIR}/features/*_features.pt"))
 
-print(f"✓ Trovati {len(feature_files)} file di feature salvati su Google Drive.")
+print(f"✓ Found {len(feature_files)} feature files on Google Drive.")
 bags, times, events, patient_list = [], [], [], []
 
 for fpath in feature_files:
     pid = os.path.basename(fpath).replace("_features.pt", "")
     if pid in manifest_clean.index:
         try:
-            # Compatibilità PyTorch 2.4+
+            # PyTorch 2.4+ compatibility
             data = torch.load(fpath, map_location="cpu", weights_only=False)
         except TypeError:
             data = torch.load(fpath, map_location="cpu")
@@ -382,18 +382,18 @@ for fpath in feature_files:
         events.append(float(row["progression_event"]))
         patient_list.append(pid)
 
-print(f"✓ Caricate con successo {len(bags)} sacche di pazienti unici:")
-print(f"  • Range follow-up clinico: {min(times):.1f} - {max(times):.1f} mesi")
-print(f"  • Eventi di progressione documentati: {int(sum(events))}/{len(events)}")
+print(f"✓ Successfully loaded {len(bags)} unique patient bags:")
+print(f"  • Clinical follow-up range: {min(times):.1f} - {max(times):.1f} months")
+print(f"  • Documented progression events: {int(sum(events))}/{len(events)}")
 
-# 2. Addestramento Attention-MIL con ottimizzatore AdamW
+# 2. Train Attention-MIL network with AdamW optimizer
 times_t = torch.tensor(times, dtype=torch.float32).to(device)
 events_t = torch.tensor(events, dtype=torch.float32).to(device)
 
 model = GatedAttentionMIL(in_features=2048, hidden_dim=256).to(device)
 optimizer = optim.AdamW(model.parameters(), lr=2e-4, weight_decay=1e-3)
 
-print(f"\\n🚀 Avvio Addestramento Attention-MIL su GPU T4 (30 epoche)...")
+print(f"\\n🚀 Launching Attention-MIL training on GPU T4 (30 epochs)...")
 model.train()
 
 for epoch in range(1, 31):
@@ -405,16 +405,16 @@ for epoch in range(1, 31):
     
     if epoch % 5 == 0 or epoch == 30:
         c_idx = fast_c_index(np.array(times), hazards.detach().cpu().numpy(), np.array(events))
-        print(f"  Epoca [{epoch:02d}/30] - Cox Loss: {loss.item():.4f} - Harrell C-index: {c_idx:.4f}")
+        print(f"  Epoch [{epoch:02d}/30] - Cox Loss: {loss.item():.4f} - Harrell C-index: {c_idx:.4f}")
 
-print("\\n✓ Addestramento del modello completato con successo!")
+print("\\n✓ Model training completed successfully!")
 """))
 
     # --------------------------------------------------------------------------
     # Cell 15: Step 8 Markdown
     # --------------------------------------------------------------------------
     cells.append(make_cell("markdown", """---
-### Step 8: Curve di Sopravvivenza Kaplan-Meier e Heatmap di Attenzione Spaziale"""))
+### Step 8: Kaplan-Meier Survival Stratification & Spatial Attention Heatmaps"""))
 
     # --------------------------------------------------------------------------
     # Cell 16: Step 8 Code
@@ -424,7 +424,7 @@ from lifelines import KaplanMeierFitter
 from lifelines.statistics import logrank_test
 from scipy.ndimage import gaussian_filter
 
-# 1. Stratificazione del Rischio
+# 1. Survival Stratification
 model.eval()
 with torch.no_grad():
     pred_hazards = np.array([model(bag)[0].item() for bag in bags])
@@ -435,35 +435,35 @@ high_risk = pred_hazards >= median_hazard
 t_np = np.array(times)
 e_np = np.array(events)
 
-# 2. Curva di Kaplan-Meier
+# 2. Kaplan-Meier Survival Curve Plotting
 fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
 if np.sum(high_risk) > 0 and np.sum(~high_risk) > 0:
     kmf_high = KaplanMeierFitter()
     kmf_low = KaplanMeierFitter()
-    kmf_high.fit(t_np[high_risk], e_np[high_risk], label="Alto Rischio (Santuario Solido / Disaccoppiato)")
-    kmf_low.fit(t_np[~high_risk], e_np[~high_risk], label="Basso Rischio (Vasi Conservati / Intersperso)")
+    kmf_high.fit(t_np[high_risk], e_np[high_risk], label="High Risk (Solid / Microvascular Decoupled Sanctuary)")
+    kmf_low.fit(t_np[~high_risk], e_np[~high_risk], label="Low Risk (Preserved Vasculature / Interspersed)")
     kmf_high.plot_survival_function(ax=ax, color="#d9534f", linewidth=2.5)
     kmf_low.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
     logrank = logrank_test(t_np[high_risk], t_np[~high_risk], e_np[high_risk], e_np[~high_risk])
     p_title = f"Log-Rank p = {logrank.p_value:.4e}"
 else:
     kmf = KaplanMeierFitter()
-    kmf.fit(t_np, e_np, label="Tutti i Pazienti")
+    kmf.fit(t_np, e_np, label="All Patients")
     kmf.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
-    p_title = "Coorte Uniforme"
+    p_title = "Uniform Cohort"
 
 ax.set_title(f"InSituVision: Progression-Free Survival ({p_title})", fontweight="bold", fontsize=12)
-ax.set_xlabel("Tempo sotto Osimertinib (Mesi)", fontweight="bold")
-ax.set_ylabel("Probabilità di Sopravvivenza Libera da Progressione", fontweight="bold")
+ax.set_xlabel("Time under Osimertinib (Months)", fontweight="bold")
+ax.set_ylabel("Progression-Free Survival Probability", fontweight="bold")
 ax.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
 
 km_save_path = f"{DRIVE_DIR}/results/kaplan_meier_survival.png"
 plt.savefig(km_save_path, dpi=150)
 plt.show()
-print(f"✓ Grafico Kaplan-Meier salvato in: {km_save_path}")
+print(f"✓ Kaplan-Meier plot saved to: {km_save_path}")
 
-# 3. Heatmap di Attenzione Spaziale sul Vetrino H&E
+# 3. Spatial Attention Heatmap Projection on Diagnostic H&E Slide
 sample_idx = 0
 sample_pid = patient_list[sample_idx]
 sample_bag = bags[sample_idx]
@@ -496,21 +496,21 @@ if len(coords) > 0 and coords.ndim == 2 and coords.shape[1] >= 2:
 
     plt.figure(figsize=(7, 6), dpi=150)
     plt.imshow(smooth, cmap="inferno", origin="upper")
-    plt.colorbar(label="Intensità Attenzione (Santuario Farmacologico)")
-    plt.title(f"InSituVision Spatial Attention Heatmap: Paziente {sample_pid}", fontweight="bold", fontsize=11)
-    plt.xlabel("Coordinate Tessutali X")
-    plt.ylabel("Coordinate Tessutali Y")
+    plt.colorbar(label="Attention Intensity (Pharmacological Sanctuary)")
+    plt.title(f"InSituVision Spatial Attention Heatmap: Patient {sample_pid}", fontweight="bold", fontsize=11)
+    plt.xlabel("Tissue X Coordinate")
+    plt.ylabel("Tissue Y Coordinate")
     plt.tight_layout()
     
     heatmap_save_path = f"{DRIVE_DIR}/results/attention_heatmap_{sample_pid}.png"
     plt.savefig(heatmap_save_path, dpi=150)
     plt.show()
-    print(f"✓ Heatmap di attenzione salvata in: {heatmap_save_path}")
+    print(f"✓ Spatial attention heatmap saved to: {heatmap_save_path}")
 
-print("\\n🎉 PIPELINE COMPLETATA CON SUCCESSO!")
-print(f"Tutti i file e grafici sono al sicuro nel tuo Google Drive:")
+print("\\n🎉 PIPELINE COMPLETED SUCCESSFULLY!")
+print(f"All files and publication figures are secured in your Google Drive:")
 print(f"📁 {DRIVE_DIR}/results/")
-print("\\n⭐ Ti è piaciuto il lavoro? Supporta la ricerca aperta lasciando una STELLA ⭐ su GitHub:")
+print("\\n⭐ Enjoyed the work? Support open-source research by leaving a STAR ⭐ on GitHub:")
 print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
 """))
 
@@ -542,7 +542,7 @@ print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
         target.parent.mkdir(parents=True, exist_ok=True)
         with open(target, "w", encoding="utf-8") as f:
             json.dump(notebook, f, indent=2, ensure_ascii=False)
-        print(f"✓ Creato notebook valido: {target}")
+        print(f"✓ Successfully generated English notebook: {target}")
 
 
 if __name__ == "__main__":

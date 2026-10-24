@@ -1,19 +1,19 @@
 # ==============================================================================
-# InSituVision-AI (Studio 4) - CODICE ESCLUSIVO E AUTONOMO PER LO STEP 7
+# InSituVision-AI (Study 4) - STANDALONE EXECUTION SCRIPT FOR STEP 7
 # ==============================================================================
-# ISTRUZIONI:
-# 1. Copia l'INTERO blocco di codice sottostante.
-# 2. In Google Colab, crea una nuova cella di codice in fondo (oppure sostituisci la cella dello Step 7).
-# 3. Incolla questo codice ed eseguilo (Shift + Invio).
+# INSTRUCTIONS:
+# 1. Copy this ENTIRE code block.
+# 2. In Google Colab, create a new code cell at the bottom (or replace Step 7).
+# 3. Paste and run (Shift + Enter).
 #
-# CARATTERISTICHE DI QUESTO CODICE:
-# - È 100% AUTONOMO: include l'architettura di rete (GatedAttentionMIL), la funzione di perdita Cox,
-#   e la funzione C-index integrata (nessun rischio di NameError anche se il runtime si è riavviato).
-# - Gestisce PyTorch 2.4+ (evita il WeightsOnlyError con weights_only=False).
-# - Rimuove i duplicati dei pazienti per garantire perfetta concordanza nei dati.
-# - Addestra il modello Deep Attention-MIL su GPU T4 per 30 epoche.
-# - Genera le curve di Kaplan-Meier (Alto vs Basso Rischio) e l'Attention Heatmap tessutale.
-# - Salva automaticamente i grafici su Google Drive in MyDrive/InSituVision_Study4/results/!
+# ARCHITECTURAL PROPERTIES:
+# - 100% AUTONOMOUS: Includes network definition (GatedAttentionMIL), Cox loss,
+#   and fast C-index (no NameError risk even if runtime restarted).
+# - Handles PyTorch 2.4+ (avoids WeightsOnlyError with weights_only=False).
+# - Automatically deduplicates patient entries for perfect survival concordance.
+# - Trains Attention-MIL on NVIDIA T4 GPU for 30 epochs.
+# - Generates Kaplan-Meier curves (High vs Low Risk) and tissue Attention Heatmaps.
+# - Automatically saves figures to Google Drive in MyDrive/InSituVision_Study4/results/!
 # ==============================================================================
 
 import os
@@ -27,20 +27,21 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 from scipy.ndimage import gaussian_filter
 
-# 0. Verifica installazione librerie facoltative (lifelines)
+# 0. Check optional survival library installation
 try:
     from lifelines import KaplanMeierFitter
     from lifelines.statistics import logrank_test
 except ImportError:
     import subprocess
-    print("Installazione di lifelines in corso...")
+    print("Installing lifelines package...")
     subprocess.run(["pip", "install", "-q", "lifelines"], check=True)
     from lifelines import KaplanMeierFitter
     from lifelines.statistics import logrank_test
 
-# 1. Verifica dispositivo e cartelle
+# 1. Verify compute device and directories
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(f"✓ Compute Device: {device} ({torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU'})")
+gpu_name = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+print(f"✓ Compute Device: {device} ({gpu_name})")
 
 if 'DRIVE_DIR' not in globals():
     DRIVE_DIR = "/content/drive/MyDrive/InSituVision_Study4"
@@ -48,9 +49,9 @@ if 'DRIVE_DIR' not in globals():
 feature_dir = f"{DRIVE_DIR}/features"
 os.makedirs(f"{DRIVE_DIR}/results", exist_ok=True)
 feature_files = sorted(glob.glob(f"{feature_dir}/*_features.pt"))
-print(f"✓ Trovati {len(feature_files)} file di feature salvati su Google Drive in {feature_dir}")
+print(f"✓ Found {len(feature_files)} feature files on Google Drive in {feature_dir}")
 
-# 2. Caricamento metadati e rimozione duplicati pazienti
+# 2. Load metadata and deduplicate patients
 if 'manifest' not in globals():
     try:
         manifest = pd.read_csv("https://raw.githubusercontent.com/Lukecele/spatial-he-vision-study4/main/data/cohort_manifest_study4.csv")
@@ -66,7 +67,7 @@ for fpath in feature_files:
     pid = fname.replace("_features.pt", "")
     if pid in manifest_clean.index:
         try:
-            # Compatibile con PyTorch 2.4+ (weights_only=False) e versioni precedenti
+            # PyTorch 2.4+ compatibility
             data = torch.load(fpath, map_location="cpu", weights_only=False)
         except TypeError:
             data = torch.load(fpath, map_location="cpu")
@@ -86,11 +87,11 @@ for fpath in feature_files:
         events.append(e)
         patient_list.append(pid)
 
-print(f"✓ Caricate con successo {len(bags)} sacche di pazienti unici:")
-print(f"  • Range Follow-up: {min(times):.1f} - {max(times):.1f} mesi")
-print(f"  • Eventi di progressione documentati: {int(sum(events))}/{len(events)}")
+print(f"✓ Successfully loaded {len(bags)} unique patient bags:")
+print(f"  • Follow-up range: {min(times):.1f} - {max(times):.1f} months")
+print(f"  • Documented progression events: {int(sum(events))}/{len(events)}")
 
-# 3. Definizione Architettura Attention-MIL e Funzione di Perdita Cox (Completamente Autonoma)
+# 3. Attention-MIL Architecture & Cox Partial Likelihood Loss
 class GatedAttentionMIL(nn.Module):
     """Gated Attention Pooling network with Cox hazard projection."""
     def __init__(self, in_features=2048, hidden_dim=256):
@@ -127,7 +128,7 @@ def cox_loss(hazards, times, events):
     return torch.sum(uncensored_loss) / (torch.sum(events) + 1e-8)
 
 def fast_c_index(times_arr, hazards_arr, events_arr):
-    """Calcolo rapido e affidabile dell'Harrell C-index in puro NumPy."""
+    """Rapid Harrell C-index calculation in pure NumPy."""
     n = len(times_arr)
     concordant, permissible, tied = 0, 0, 0
     for i in range(n):
@@ -146,14 +147,14 @@ def fast_c_index(times_arr, hazards_arr, events_arr):
                     tied += 1
     return (concordant + 0.5 * tied) / max(permissible, 1)
 
-# 4. Inizializzazione ed Esecuzione Addestramento su GPU T4
+# 4. Model Training on NVIDIA T4 GPU
 times_t = torch.tensor(times, dtype=torch.float32).to(device)
 events_t = torch.tensor(events, dtype=torch.float32).to(device)
 
 model = GatedAttentionMIL(in_features=2048, hidden_dim=256).to(device)
 optimizer = optim.AdamW(model.parameters(), lr=2e-4, weight_decay=1e-3)
 
-print(f"\n🚀 Avvio Addestramento Attention-MIL su GPU T4 (30 epoche)...")
+print(f"\n🚀 Launching Attention-MIL training on GPU T4 (30 epochs)...")
 model.train()
 
 for epoch in range(1, 31):
@@ -171,12 +172,12 @@ for epoch in range(1, 31):
     if epoch % 5 == 0 or epoch == 30:
         h_np = hazards.detach().cpu().numpy()
         c_val = fast_c_index(np.array(times), h_np, np.array(events))
-        print(f"  Epoca [{epoch:02d}/30] - Cox Loss: {loss.item():.4f} - Harrell C-index: {c_val:.4f}")
+        print(f"  Epoch [{epoch:02d}/30] - Cox Loss: {loss.item():.4f} - Harrell C-index: {c_val:.4f}")
 
-print("\n✓ Addestramento del modello completato con successo!")
+print("\n✓ Model training completed successfully!")
 
-# 5. Generazione Curve di Sopravvivenza Kaplan-Meier
-print("\n📊 Calcolo Curve di Sopravvivenza e Heatmap di Spiegabilità...")
+# 5. Kaplan-Meier Survival Curve Generation
+print("\n📊 Computing Survival Curves & Spatial Attention Heatmaps...")
 model.eval()
 with torch.no_grad():
     pred_hazards = np.array([model(bag)[0].item() for bag in bags])
@@ -191,21 +192,21 @@ fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
 if np.sum(high_risk) > 0 and np.sum(~high_risk) > 0:
     kmf_high = KaplanMeierFitter()
     kmf_low = KaplanMeierFitter()
-    kmf_high.fit(t_np[high_risk], e_np[high_risk], label="Alto Rischio Predetto (Santuario Disaccoppiato / Solido)")
-    kmf_low.fit(t_np[~high_risk], e_np[~high_risk], label="Basso Rischio Predetto (Vasi Conservati / Intersperso)")
+    kmf_high.fit(t_np[high_risk], e_np[high_risk], label="High Risk (Solid / Microvascular Decoupled Sanctuary)")
+    kmf_low.fit(t_np[~high_risk], e_np[~high_risk], label="Low Risk (Preserved Vasculature / Interspersed)")
     kmf_high.plot_survival_function(ax=ax, color="#d9534f", linewidth=2.5)
     kmf_low.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
     lr = logrank_test(t_np[high_risk], t_np[~high_risk], e_np[high_risk], e_np[~high_risk])
     p_val_str = f"Log-Rank p = {lr.p_value:.4e}"
 else:
     kmf = KaplanMeierFitter()
-    kmf.fit(t_np, e_np, label="Tutti i Pazienti")
+    kmf.fit(t_np, e_np, label="All Patients")
     kmf.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
-    p_val_str = "Coorte Uniforme"
+    p_val_str = "Uniform Cohort"
 
 ax.set_title(f"InSituVision: Progression-Free Survival ({p_val_str})", fontweight="bold")
-ax.set_xlabel("Tempo sotto Osimertinib (Mesi)", fontweight="bold")
-ax.set_ylabel("Probabilità di Sopravvivenza Libera da Progressione", fontweight="bold")
+ax.set_xlabel("Time under Osimertinib (Months)", fontweight="bold")
+ax.set_ylabel("Progression-Free Survival Probability", fontweight="bold")
 ax.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
 
@@ -213,7 +214,7 @@ os.makedirs(f"{DRIVE_DIR}/results", exist_ok=True)
 plt.savefig(f"{DRIVE_DIR}/results/kaplan_meier_survival.png", dpi=150)
 plt.show()
 
-# 6. Mappa di Attenzione Spaziale (Heatmap sul vetrino)
+# 6. Spatial Attention Heatmap Projection
 sample_idx = 0
 sample_pid = patient_list[sample_idx]
 sample_fpath = f"{DRIVE_DIR}/features/{sample_pid}_features.pt"
@@ -245,16 +246,16 @@ if len(coords) > 0 and coords.ndim == 2 and coords.shape[1] >= 2:
 
     plt.figure(figsize=(7, 6), dpi=150)
     plt.imshow(smooth, cmap="inferno", origin="upper")
-    plt.colorbar(label="Intensità Attenzione (Santuario Farmacologico Solido)")
-    plt.title(f"InSituVision Spatial Attention Heatmap: Paziente {sample_pid}", fontweight="bold")
-    plt.xlabel("Coordinate Tessutali X")
-    plt.ylabel("Coordinate Tessutali Y")
+    plt.colorbar(label="Attention Intensity (Pharmacological Sanctuary)")
+    plt.title(f"InSituVision Spatial Attention Heatmap: Patient {sample_pid}", fontweight="bold")
+    plt.xlabel("Tissue X Coordinate")
+    plt.ylabel("Tissue Y Coordinate")
     plt.tight_layout()
     plt.savefig(f"{DRIVE_DIR}/results/attention_heatmap_{sample_pid}.png", dpi=150)
     plt.show()
 
-print(f"\n🎉 PERFETTO! Tutti i risultati e i grafici sono stati generati e salvati sul tuo Google Drive:")
+print(f"\n🎉 SUCCESS: All validation results and publication figures saved to Google Drive:")
 print(f"   📁 {DRIVE_DIR}/results/kaplan_meier_survival.png")
 print(f"   📁 {DRIVE_DIR}/results/attention_heatmap_{sample_pid}.png")
-print(f"\n⭐ Ti è piaciuto il lavoro? Supporta la ricerca aperta lasciando una STELLA ⭐ su GitHub:")
-print(f"   👉 https://github.com/Lukecele/spatial-he-vision-study4")
+print("\n⭐ Enjoyed the work? Support open-source research by leaving a STAR ⭐ on GitHub:")
+print("   👉 https://github.com/Lukecele/spatial-he-vision-study4")
