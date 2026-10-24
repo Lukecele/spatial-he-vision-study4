@@ -35,11 +35,11 @@ Standard gigapixel Whole-Slide Images (`.svs`) range from $500\,\text{MB}$ to $2
 
 ```mermaid
 flowchart LR
-    GDC["NIH GDC API"] -->|1. Stream 1 Slide (~1 GB)| Local["Colab Ephemeral Disk<br>(Uses 1 GB / 100 GB)"]
-    Local -->|2. In-Memory Tiling at 20x| RAM["Tiles in RAM<br>(Zero disk I/O)"]
-    RAM -->|3. Feature Extraction on GPU T4| GPU["GPU T4 (16 GB)<br>Mixed-Precision (FP16)"]
-    GPU -->|4. Serialize Compact Tensor (.pt)| Drive["Google Drive (5 TB)<br>Only ~15 MB per patient!"]
-    Local -.->|5. Immediate Purge| Delete["Local disk freed!"]
+    GDC["NIH GDC API"] -->|"1. Stream 1 Slide: ~1 GB"| Local["Colab Ephemeral Disk<br/>1 GB / 100 GB used"]
+    Local -->|"2. In-Memory Tiling: 20x"| RAM["Tiles in RAM<br/>Zero disk I/O"]
+    RAM -->|"3. GPU T4 Feature Extraction"| GPU["GPU T4 16 GB<br/>Mixed-Precision FP16"]
+    GPU -->|"4. Serialize Compact Tensor"| Drive["Google Drive 5 TB<br/>~15 MB per patient"]
+    Local -.->|"5. Immediate Purge"| Delete["Local disk freed"]
 ```
 
 ### Key Advantages:
