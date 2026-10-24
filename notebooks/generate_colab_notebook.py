@@ -278,18 +278,28 @@ print("✓ Attention-MIL architecture and Cox loss compiled.")
     cells.append(make_cell("markdown", """### Step 7: Train Survival Model & Cross-Validation"""))
 
     # Cell 14: Step 7 Code
-    cells.append(make_cell("code", """import torch.optim as optim
-from lifelines.utils import concordance_index
+    cells.append(make_cell("code", """import glob
+import torch.optim as optim
 
 # Load processed feature bags and survival metadata
+manifest_clean = manifest.drop_duplicates(subset=["patient_id"]).set_index("patient_id")
+feature_files = sorted(glob.glob(f"{DRIVE_DIR}/features/*_features.pt"))
+
 bags, times, events, patient_list = [], [], [], []
 
-for idx, row in subset.iterrows():
-    pid = row["patient_id"]
-    feat_path = f"{DRIVE_DIR}/features/{pid}_features.pt"
-    if os.path.exists(feat_path):
-        data = torch.load(feat_path, map_location="cpu")
-        bags.append(torch.tensor(data["features"], dtype=torch.float32).to(device))
+for fpath in feature_files:
+    pid = os.path.basename(fpath).replace("_features.pt", "")
+    if pid in manifest_clean.index:
+        try:
+            data = torch.load(fpath, map_location="cpu", weights_only=False)
+        except TypeError:
+            data = torch.load(fpath, map_location="cpu")
+        
+        feats = data["features"]
+        feats_tensor = torch.from_numpy(feats).float().to(device) if isinstance(feats, np.ndarray) else feats.float().to(device)
+        row = manifest_clean.loc[pid]
+        
+        bags.append(feats_tensor)
         times.append(float(row["follow_up_months"]))
         events.append(float(row["progression_event"]))
         patient_list.append(pid)
@@ -297,8 +307,27 @@ for idx, row in subset.iterrows():
 times_t = torch.tensor(times, dtype=torch.float32).to(device)
 events_t = torch.tensor(events, dtype=torch.float32).to(device)
 
+def fast_c_index(times_arr, hazards_arr, events_arr):
+    n = len(times_arr)
+    concordant, permissible, tied = 0, 0, 0
+    for i in range(n):
+        for j in range(i + 1, n):
+            if times_arr[i] < times_arr[j] and events_arr[i] == 1:
+                permissible += 1
+                if hazards_arr[i] > hazards_arr[j]:
+                    concordant += 1
+                elif hazards_arr[i] == hazards_arr[j]:
+                    tied += 1
+            elif times_arr[j] < times_arr[i] and events_arr[j] == 1:
+                permissible += 1
+                if hazards_arr[j] > hazards_arr[i]:
+                    concordant += 1
+                elif hazards_arr[j] == hazards_arr[i]:
+                    tied += 1
+    return (concordant + 0.5 * tied) / max(permissible, 1)
+
 model = GatedAttentionMIL(in_features=2048, hidden_dim=256).to(device)
-optimizer = optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-3)
+optimizer = optim.AdamW(model.parameters(), lr=2e-4, weight_decay=1e-3)
 
 print(f"Training Attention-MIL on {len(bags)} patient bags for 30 epochs...")
 model.train()
@@ -311,7 +340,7 @@ for epoch in range(1, 31):
     optimizer.step()
     
     if epoch % 5 == 0 or epoch == 30:
-        c_idx = concordance_index(times, -hazards.detach().cpu().numpy(), events)
+        c_idx = fast_c_index(np.array(times), hazards.detach().cpu().numpy(), np.array(events))
         print(f"  Epoch [{epoch:02d}/30] - Cox Loss: {loss.item():.4f} - Harrell C-index: {c_idx:.4f}")
 
 print("✓ Model training completed successfully!")
@@ -338,41 +367,69 @@ kmf_high = KaplanMeierFitter()
 kmf_low = KaplanMeierFitter()
 
 fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
-kmf_high.fit(times_t[high_risk].cpu().numpy(), events_t[high_risk].cpu().numpy(), label="High Risk (Solid/Decoupled Sanctuary)")
-kmf_low.fit(times_t[~high_risk].cpu().numpy(), events_t[~high_risk].cpu().numpy(), label="Low Risk (Interspersed/Vascularized)")
+t_np = np.array(times)
+e_np = np.array(events)
 
-kmf_high.plot_survival_function(ax=ax, color="#d9534f", linewidth=2.5)
-kmf_low.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
+if np.sum(high_risk) > 0 and np.sum(~high_risk) > 0:
+    kmf_high.fit(t_np[high_risk], e_np[high_risk], label="High Risk (Solid/Decoupled Sanctuary)")
+    kmf_low.fit(t_np[~high_risk], e_np[~high_risk], label="Low Risk (Interspersed/Vascularized)")
+    kmf_high.plot_survival_function(ax=ax, color="#d9534f", linewidth=2.5)
+    kmf_low.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
+    logrank = logrank_test(t_np[high_risk], t_np[~high_risk], e_np[high_risk], e_np[~high_risk])
+    p_title = f"Log-Rank p = {logrank.p_value:.4e}"
+else:
+    kmf_high.fit(t_np, e_np, label="All Patients")
+    kmf_high.plot_survival_function(ax=ax, color="#0275d8", linewidth=2.5)
+    p_title = "Uniform Cohort"
 
-logrank = logrank_test(times_t[high_risk].cpu().numpy(), times_t[~high_risk].cpu().numpy(),
-                       events_t[high_risk].cpu().numpy(), events_t[~high_risk].cpu().numpy())
-
-ax.set_title(f"InSituVision Progression-Free Survival (Log-Rank p = {logrank.p_value:.4e})", fontweight="bold")
+ax.set_title(f"InSituVision Progression-Free Survival ({p_title})", fontweight="bold")
 ax.set_xlabel("Time Under Osimertinib (Months)", fontweight="bold")
 ax.set_ylabel("Progression-Free Survival Probability", fontweight="bold")
 ax.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
+os.makedirs(f"{DRIVE_DIR}/results", exist_ok=True)
+plt.savefig(f"{DRIVE_DIR}/results/kaplan_meier_survival.png", dpi=150)
 plt.show()
 
 # Render sample attention heatmap overlay
 sample_idx = 0
 sample_pid = patient_list[sample_idx]
 sample_bag = bags[sample_idx]
-sample_data = torch.load(f"{DRIVE_DIR}/features/{sample_pid}_features.pt", map_location="cpu")
-coords = sample_data["coords"]
+try:
+    sample_data = torch.load(f"{DRIVE_DIR}/features/{sample_pid}_features.pt", map_location="cpu", weights_only=False)
+except TypeError:
+    sample_data = torch.load(f"{DRIVE_DIR}/features/{sample_pid}_features.pt", map_location="cpu")
+
+coords = np.array(sample_data["coords"])
 
 with torch.no_grad():
     _, weights = model(sample_bag)
     w_np = weights.cpu().numpy()
 
-grid_size = 80
-x, y = coords[:, 0], coords[:, 1]
-xn = np.clip(((x - x.min()) / max(x.max() - x.min(), 1) * (grid_size - 1)).astype(int), 0, grid_size - 1)
-yn = np.clip(((y - y.min()) / max(y.max() - y.min(), 1) * (grid_size - 1)).astype(int), 0, grid_size - 1)
+if len(coords) > 0 and coords.ndim == 2 and coords.shape[1] >= 2:
+    grid_size = 80
+    x, y = coords[:, 0], coords[:, 1]
+    denom_x = max(x.max() - x.min(), 1)
+    denom_y = max(y.max() - y.min(), 1)
+    xn = np.clip(((x - x.min()) / denom_x * (grid_size - 1)).astype(int), 0, grid_size - 1)
+    yn = np.clip(((y - y.min()) / denom_y * (grid_size - 1)).astype(int), 0, grid_size - 1)
 
-grid = np.zeros((grid_size, grid_size))
-w_norm = w_np / (w_np.max() + 1e-12)
-for i in range(len(coords)):
+    grid = np.zeros((grid_size, grid_size))
+    w_norm = w_np / (w_np.max() + 1e-12)
+    for i in range(len(coords)):
+        grid[yn[i], xn[i]] += w_norm[i]
+
+    smooth = gaussian_filter(grid, sigma=1.5)
+
+    plt.figure(figsize=(7, 6), dpi=150)
+    plt.imshow(smooth, cmap="inferno", origin="upper")
+    plt.colorbar(label="Attention Intensity (Solid Sanctuary)")
+    plt.title(f"InSituVision Spatial Attention Heatmap: Patient {sample_pid}", fontweight="bold")
+    plt.xlabel("Spatial X Coordinate")
+    plt.ylabel("Spatial Y Coordinate")
+    plt.tight_layout()
+    plt.savefig(f"{DRIVE_DIR}/results/attention_heatmap_{sample_pid}.png", dpi=150)
+    plt.show()
     grid[yn[i], xn[i]] += w_norm[i]
 
 smooth = gaussian_filter(grid, sigma=1.5)
