@@ -5,7 +5,7 @@
 $^{1}$Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Via Sergio Pansini 5, 80131 Naples, Italy  
 $^*$Correspondence: `l.celebrano@studenti.unina.it` | ORCID: [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)  
 **Classification:** Independent Scientific Research • Computational Pathology, Artificial Intelligence & Translational Oncology  
-**Repository:** [https://github.com/Lukecele/spatial-he-vision-study4](https://github.com/Lukecele/spatial-he-vision-study4)  
+**Repository:** [https://github.com/Lukecele/spatial-he-vision-study4](https://github.com/Lukecele/spatial-he-vision-study4) • **DOI (Zenodo Archive):** [10.5281/zenodo.23621924](https://doi.org/10.5281/zenodo.23621924)  
 **Colab Pipeline:** [Open in Google Colab](https://colab.research.google.com/github/Lukecele/spatial-he-vision-study4/blob/main/notebooks/InSituVision_Colab_T4_Pipeline.ipynb)
 
 ---

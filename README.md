@@ -1,7 +1,7 @@
 # InSituVision: Predicting Microvascular Decoupling and Osimertinib PFS from Routine H&E Whole-Slide Images
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.placeholder.svg)](https://zenodo.org)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23621924.svg)](https://doi.org/10.5281/zenodo.23621924)
 [![CI](https://github.com/Lukecele/spatial-he-vision-study4/actions/workflows/ci.yml/badge.svg)](https://github.com/Lukecele/spatial-he-vision-study4/actions/workflows/ci.yml)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Lukecele/spatial-he-vision-study4/blob/main/notebooks/InSituVision_Colab_T4_Pipeline.ipynb)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)

@@ -3,6 +3,7 @@ message: "If you use this digital pathology pipeline, Attention-MIL survival mod
 title: "InSituVision: Predicting Microvascular Decoupling and Osimertinib Progression-Free Survival from Routine Diagnostic H&E Whole-Slide Images via Attention-Based Multiple Instance Learning"
 version: 1.0.0
 date-released: 2026-10-24
+doi: "10.5281/zenodo.23621924"
 url: "https://github.com/Lukecele/spatial-he-vision-study4"
 repository-code: "https://github.com/Lukecele/spatial-he-vision-study4"
 license: GPL-3.0-or-later
