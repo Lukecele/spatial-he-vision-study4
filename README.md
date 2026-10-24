@@ -45,11 +45,17 @@ flowchart LR
 
 ---
 
-## 📊 Explainability: Spatial Attention Heatmaps
+## 📊 Model Results & Explainability
+ 
+### 1. Progression-Free Survival Stratification (Kaplan-Meier)
+The Attention-MIL model stratifies EGFR-mutant patients into high-risk (microvascular decoupling sanctuary phenotype) and low-risk groups directly from diagnostic H&E slides:
 
-InSituVision provides full morphological interpretability by projecting the learned patch attention weights back to the 2D histological plane:
+![Kaplan-Meier Survival Curves](results/kaplan_meier_survival.png)
 
-![Attention Heatmap](results/figure_sample_attention_heatmap.png)
+### 2. Spatial Attention Heatmaps (Ground-Truth Localization)
+InSituVision provides full morphological interpretability by projecting the learned patch attention weights back to the 2D histological coordinate plane:
+
+![Attention Heatmap](results/attention_heatmap_TCGA-05-4382.png)
 
 The neural network's highest attention density ($a_k > 95\text{th percentile}$) concentrates precisely in **solid and micropapillary neoplastic sheets devoid of fibrovascular stroma**, reproducing the ground-truth biophysical mechanism discovered in Visium HD spatial transcriptomics.
 
@@ -70,6 +76,8 @@ spatial-he-vision-study4/
 ├── notebooks/
 │   └── InSituVision_Colab_T4_Pipeline.ipynb       # Interactive Colab T4 GPU streaming notebook
 ├── results/
+│   ├── kaplan_meier_survival.png                  # Colab-trained Kaplan-Meier survival curve
+│   ├── attention_heatmap_TCGA-05-4382.png          # Patient-specific spatial attention heatmap
 │   └── figure_sample_attention_heatmap.png        # 300 DPI publication attention heatmap
 ├── src/
 │   ├── build_cohort_manifest.py                   # Automated GDC API matcher
