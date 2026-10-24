@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this digital pathology pipeline, Attention-MIL survival model, or code in your research, please cite it as below."
+title: "InSituVision: Predicting Microvascular Decoupling and Osimertinib Progression-Free Survival from Routine Diagnostic H&E Whole-Slide Images via Attention-Based Multiple Instance Learning"
+version: 1.0.0
+date-released: 2026-10-24
+url: "https://github.com/Lukecele/spatial-he-vision-study4"
+repository-code: "https://github.com/Lukecele/spatial-he-vision-study4"
+license: GPL-3.0-or-later
+keywords:
+  - "digital pathology"
+  - "computational oncology"
+  - "multiple instance learning"
+  - "Attention-MIL"
+  - "whole slide images"
+  - "EGFR-TKI"
+  - "osimertinib"
+  - "microvascular decoupling"
+  - "TCGA-LUAD"
+authors:
+  - family-names: "Celebrano"
+    given-names: "Luca"
+    orcid: "https://orcid.org/0009-0007-0931-3555"
+    email: "l.celebrano@studenti.unina.it"
+    affiliation: "Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy"

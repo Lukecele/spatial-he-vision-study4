@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large Whole Slide Image raw formats (streamed on demand)
+*.svs
+*.tif
+*.tiff
+*.ndpi
+*.vms
+*.mrxs
+
+# Temporary downloads and checkpoints
+/temp_*
+/checkpoints/
+
+# Virtual environments
+venv/
+.env
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
