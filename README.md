@@ -121,7 +121,8 @@ Click the badge below to launch the complete end-to-end streaming pipeline on a 
 ```bash
 git clone https://github.com/Lukecele/spatial-he-vision-study4.git
 cd spatial-he-vision-study4
-python3 -m unittest discover -s tests -v
+./quickstart.sh
+# or: python3 -m unittest discover -s tests -v
 ```
 
 ---

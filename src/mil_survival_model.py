@@ -136,6 +136,12 @@ def harrell_concordance_index(hazards: np.ndarray, times: np.ndarray, events: np
 
 
 if __name__ == "__main__":
+    print(r"""
+========================================================================
+ ⭐ Star on GitHub: https://github.com/Lukecele/spatial-he-vision-study4
+    If you find this research useful, please star the repository!
+========================================================================
+""")
     # Smoke test on synthetic bags
     model = AttentionSurvivalMIL(in_features=64, hidden_dim=32)
     dummy_bag = np.random.randn(150, 64)
