@@ -6,12 +6,17 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Lukecele/spatial-he-vision-study4/blob/main/notebooks/InSituVision_Colab_T4_Pipeline.ipynb)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Status: Peer-Review Ready](https://img.shields.io/badge/Status-Peer--Review_Ready-emerald.svg)](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)
+[![Interactive Web Portal](https://img.shields.io/badge/Web%20Portal-Live%20Demo-brightgreen.svg)](https://lukecele.github.io/spatial-he-vision-study4/)
 
 **Author & Principal Investigator:** Luca Celebrano  
 **Affiliation:** Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy  
 **Correspondence:** `l.celebrano@studenti.unina.it` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)  
 **Classification:** Independent Scientific Research • Computational Pathology, Artificial Intelligence & Translational Oncology  
-**Manuscript PDF:** [MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)
+**Manuscript PDF:** [MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)  
+**Live Interactive Portal:** [https://lukecele.github.io/spatial-he-vision-study4/](https://lukecele.github.io/spatial-he-vision-study4/)
+
+> [!NOTE]
+> 🌐 **Interactive Scientific Portal:** Explore the live InSituVision Attention-MIL digital pathology interactive portal at [lukecele.github.io/spatial-he-vision-study4/](https://lukecele.github.io/spatial-he-vision-study4/).
 
 > [!TIP]
 > **Support Open-Source Computational Pathology:**  
