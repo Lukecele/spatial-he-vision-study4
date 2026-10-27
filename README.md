@@ -7,6 +7,7 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![Status: Peer-Review Ready](https://img.shields.io/badge/Status-Peer--Review_Ready-emerald.svg)](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)
 [![Interactive Web Portal](https://img.shields.io/badge/Web%20Portal-Live%20Demo-brightgreen.svg)](https://lukecele.github.io/spatial-he-vision-study4/)
+[![Listed in Awesome AI4DigitalPathology](https://img.shields.io/badge/Awesome-AI4DigitalPathology-blue.svg)](https://github.com/lingxitong/Awesome-AI4DigitalPathology)
 
 **Author & Principal Investigator:** Luca Celebrano  
 **Affiliation:** Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy  
