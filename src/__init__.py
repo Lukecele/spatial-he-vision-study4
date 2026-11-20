@@ -1,7 +1,7 @@
 """
 spatial-he-vision-study4: InSituVision-AI Deep Attention Multiple Instance Learning
 ===================================================================================
-Author: Luca Celebrano (School of Medicine, University of Naples Federico II & TIGEM)
+Author: Luca Celebrano (Independent Researcher, Naples, Italy)
 License: GNU General Public License v3.0 (GPL-3.0)
 DOI: 10.5281/zenodo.23621924
 """

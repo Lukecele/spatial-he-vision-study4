@@ -10,8 +10,8 @@
 [![Listed in Awesome AI4DigitalPathology](https://img.shields.io/badge/Awesome-AI4DigitalPathology-blue.svg)](https://github.com/lingxitong/Awesome-AI4DigitalPathology/pull/28)
 
 **Author & Principal Investigator:** Luca Celebrano  
-**Affiliation:** Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy  
-**Correspondence:** `l.celebrano@studenti.unina.it` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)  
+**Affiliation:** Independent Researcher, Naples, Italy  
+**Correspondence:** `luca.celebrano1@gmail.com` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)  
 **Classification:** Independent Scientific Research • Computational Pathology, Artificial Intelligence & Translational Oncology  
 **Manuscript PDF:** [MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf](manuscript/MANUSCRIPT_H_AND_E_VISION_VALIDATION.pdf)  
 **Live Interactive Portal:** [https://lukecele.github.io/spatial-he-vision-study4/](https://lukecele.github.io/spatial-he-vision-study4/)
@@ -137,7 +137,7 @@ cd spatial-he-vision-study4
   journal = {Preprint / Independent Research},
   year = {2026},
   url = {https://github.com/Lukecele/spatial-he-vision-study4},
-  institution = {Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II}
+  institution = {Department of Clinical Medicine and Surgery, Independent Researcher, Naples, Italy}
 }
 ```
 

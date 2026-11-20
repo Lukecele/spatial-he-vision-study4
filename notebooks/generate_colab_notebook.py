@@ -41,8 +41,8 @@ def create_full_notebook():
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 **Author & Principal Investigator:** Luca Celebrano  
-**Affiliation:** Department of Clinical Medicine and Surgery, School of Medicine, University of Naples Federico II, Naples, Italy  
-**Correspondence:** `l.celebrano@studenti.unina.it` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)
+**Affiliation:** Independent Researcher, Naples, Italy  
+**Correspondence:** `luca.celebrano1@gmail.com` | **ORCID:** [0009-0007-0931-3555](https://orcid.org/0009-0007-0931-3555)
 
 ---
 
